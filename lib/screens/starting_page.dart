@@ -49,6 +49,7 @@ class _StartingPageState extends State<StartingPage> {
                     MediaConstants.bottomLeftBgEffect,
                     width: 150,
                     height: 70,
+                    
                   ),
                 ),
                 Positioned(
