@@ -1,13 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_svg/svg.dart';
 import 'package:httyd/res/constants/constants.dart';
 import 'package:httyd/res/constants/media_constants.dart';
+import 'package:httyd/res/routes/routes.dart';
 import 'package:httyd/res/theme/theme.dart';
 
 class StartingPage extends StatefulWidget {
-  const StartingPage({super.key, required this.title});
+  const StartingPage({super.key});
 
-  final String title;
 
   @override
   State<StartingPage> createState() => _StartingPageState();
@@ -49,7 +48,6 @@ class _StartingPageState extends State<StartingPage> {
                     MediaConstants.bottomLeftBgEffect,
                     width: 150,
                     height: 70,
-                    
                   ),
                 ),
                 Positioned(
@@ -93,7 +91,9 @@ class _StartingPageState extends State<StartingPage> {
                   child: MaterialButton(
                     padding: EdgeInsets.symmetric(vertical: 25),
                     color: CustomColors.buttonColor.withOpacity(0.95),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.pushNamed(context, RouteNames.selectYourDragon);
+                    },
                     child: Text(
                       "START",
                       style: TextStyle(

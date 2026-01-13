@@ -1,7 +1,13 @@
 import 'package:device_preview/device_preview.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:httyd/l10n/app_localizations.dart';
+import 'package:httyd/l10n/l10n.dart';
+import 'package:httyd/res/constants/constants.dart';
+import 'package:httyd/res/routes/routes.dart';
+import 'package:httyd/res/theme/theme.dart';
 import 'package:httyd/screens/starting_page.dart';
+import 'package:httyd/utils/utils.dart';
 
 void main() {
   final bladeDevice = DeviceInfo.genericTablet(
@@ -35,10 +41,22 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
-      theme: ThemeData(colorScheme: .fromSeed(seedColor: Colors.deepPurple)),
-      home: const StartingPage(title: 'Flutter Demo Home Page'),
+      scaffoldMessengerKey: Utils.scaffoldMessengerKey,
+      title: Constants.appName,
+      initialRoute: RouteNames.startingPage,
+      onGenerateRoute: Routes.generateRoute,
+      themeMode: ThemeMode.light,
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      locale: const Locale('en'),
+      supportedLocales: L10n.all,
+      localizationsDelegates: const [
+        AppLocalizations.delegate,
+        // GlobalMaterialLocalizations.delegate,
+        // GlobalWidgetsLocalizations.delegate,
+        // GlobalCupertinoLocalizations.delegate,
+      ],
     );
   }
 }
