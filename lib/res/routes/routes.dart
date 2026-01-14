@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:httyd/screens/select_your_dragon.dart';
+import 'package:httyd/screens/select_viking_name.dart';
 import 'package:httyd/screens/splash/splash_screen.dart';
 import 'package:httyd/screens/starting_page.dart';
 
 class RouteNames {
   static const String splashScreen = 'splash_screen';
   static const String selectYourDragon = 'select_your_dragon';
+  static const String selectVikingName = 'select_viking_name';
   static const String startingPage = 'starting_page';
 }
 
@@ -19,6 +21,10 @@ class Routes {
       case RouteNames.selectYourDragon:
         return MaterialPageRoute(
           builder: (BuildContext context) => const SelectYourDragon(),
+        );
+      case RouteNames.selectVikingName:
+        return MaterialPageRoute(
+          builder: (BuildContext context) => const SelectVikingName(),
         );
       case RouteNames.startingPage:
         return MaterialPageRoute(

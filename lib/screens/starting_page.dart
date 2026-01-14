@@ -7,12 +7,46 @@ import 'package:httyd/res/theme/theme.dart';
 class StartingPage extends StatefulWidget {
   const StartingPage({super.key});
 
-
   @override
   State<StartingPage> createState() => _StartingPageState();
 }
 
 class _StartingPageState extends State<StartingPage> {
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _increaseImageCacheSize();
+    _preloadImages();
+  }
+
+  void _increaseImageCacheSize() {
+    // Increase image cache size to allow more images to be preloaded
+    final imageCache = PaintingBinding.instance.imageCache;
+    imageCache.maximumSize = 2000; // Increase from default 1000 to 2000
+    imageCache.maximumSizeBytes =
+        500 * 1024 * 1024; // 500 MB (default is 100 MB)
+  }
+
+  void _preloadImages() {
+    // Preload all images used in select_your_dragon screen
+    precacheImage(AssetImage(MediaConstants.paperBackground), context);
+    precacheImage(AssetImage(MediaConstants.lineDecoration), context);
+    precacheImage(AssetImage(MediaConstants.circle), context);
+    precacheImage(AssetImage(MediaConstants.selectYourDragon), context);
+    precacheImage(AssetImage(MediaConstants.isleOfBerk), context);
+    precacheImage(AssetImage(MediaConstants.dragonContainer), context);
+    precacheImage(AssetImage(MediaConstants.dragon1), context);
+    precacheImage(AssetImage(MediaConstants.dragon2), context);
+    precacheImage(AssetImage(MediaConstants.dragon3), context);
+    precacheImage(AssetImage(MediaConstants.dragon4), context);
+    precacheImage(AssetImage(MediaConstants.bottomLeftDarkBgEffect), context);
+    precacheImage(AssetImage(MediaConstants.leftDarkBgEffect), context);
+    precacheImage(AssetImage(MediaConstants.isleOfBerkVertical), context);
+    precacheImage(AssetImage(MediaConstants.topRightDarkBgEffect), context);
+    // Preload images used in select_viking_name screen
+    precacheImage(AssetImage(MediaConstants.selectVikingNameBg), context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
