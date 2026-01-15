@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:httyd/screens/confirm_license_image.dart';
+import 'package:httyd/screens/digital_copy.dart';
 import 'package:httyd/screens/select_your_dragon.dart';
 import 'package:httyd/screens/select_viking_name.dart';
 import 'package:httyd/screens/splash/splash_screen.dart';
@@ -9,6 +11,8 @@ class RouteNames {
   static const String selectYourDragon = 'select_your_dragon';
   static const String selectVikingName = 'select_viking_name';
   static const String startingPage = 'starting_page';
+  static const String confirmLicenseImage = 'confirm_license_image';
+  static const String digitalCopy = 'digital_copy';
 }
 
 class Routes {
@@ -29,6 +33,14 @@ class Routes {
       case RouteNames.startingPage:
         return MaterialPageRoute(
           builder: (BuildContext context) => const StartingPage(),
+        );
+      case RouteNames.confirmLicenseImage:
+        return MaterialPageRoute(
+          builder: (BuildContext context) => const ConfirmLicenseImage(),
+        );
+      case RouteNames.digitalCopy:
+        return MaterialPageRoute(
+          builder: (BuildContext context) => const DigitalCopy(),
         );
       default:
         return MaterialPageRoute(

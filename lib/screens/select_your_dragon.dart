@@ -3,7 +3,6 @@ import 'package:httyd/res/constants/constants.dart';
 import 'package:httyd/res/constants/media_constants.dart';
 import 'package:httyd/res/routes/routes.dart';
 import 'package:httyd/res/theme/theme.dart';
-import 'package:httyd/utils/responsiveSize.dart';
 
 class SelectYourDragon extends StatefulWidget {
   const SelectYourDragon({super.key});
@@ -147,28 +146,7 @@ class _SelectYourDragonState extends State<SelectYourDragon> {
                   dragonHeight: 280,
                   dragonWidth: 542,
                 ),
-                Positioned(
-                  bottom: 120,
-                  left: 100,
-                  child: Image.asset(
-                    MediaConstants.bottomLeftDarkBgEffect,
-                    width: 150,
-                    height: 70,
-                  ),
-                ),
-                Positioned(
-                  top: 0,
-                  bottom: 0,
-                  left: 130,
-                  child: Image.asset(
-                    MediaConstants.leftDarkBgEffect,
-                    width: 37,
-                    height: 350,
-                    cacheHeight: 700,
-                    cacheWidth: 37,
-                    // fit: BoxFit.fitWidth,
-                  ),
-                ),
+
                 Positioned(
                   top: 0,
                   bottom: 0,
@@ -178,15 +156,6 @@ class _SelectYourDragonState extends State<SelectYourDragon> {
                     width: 50,
                     height: 150,
                     cacheHeight: 300,
-                  ),
-                ),
-                Positioned(
-                  top: 30,
-                  right: 30,
-                  child: Image.asset(
-                    MediaConstants.topRightDarkBgEffect,
-                    width: 130,
-                    height: 280,
                   ),
                 ),
 
