@@ -33,17 +33,30 @@ class _DigitalCopyState extends State<DigitalCopy> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.black),
+        splashColor: Colors.black.withOpacity(0.18),
+        highlightColor: Colors.black.withOpacity(0.12),
+      ),
       builder: OnscreenKeyboard.builder(
         showControlBar: false,
         width: (context) => 740,
         aspectRatio: 1.7,
+        layout: KeyboardLayout.custom(
+          aspectRatio: 1.7,
+          modes: ({...const MobileKeyboardLayout().modes}..remove('emojis')),
+        ),
         theme: OnscreenKeyboardThemeData(
           actionKeyThemeData: ActionKeyThemeData(
             backgroundColor: Colors.transparent,
+            foregroundColor: Colors.black,
+            pressedBackgroundColor: Colors.black,
+            pressedForegroundColor: Colors.white,
             iconSize: 45,
           ),
           textKeyThemeData: TextKeyThemeData(
             backgroundColor: Colors.transparent,
+            foregroundColor: Colors.black,
 
             textStyle: TextStyle(
               fontSize: 20,
@@ -108,11 +121,24 @@ class _DigitalCopyState extends State<DigitalCopy> {
                       controller: emailController,
                       focusNode: emailFocusNode,
                       textAlign: TextAlign.center,
+                      cursorColor: Colors.black,
                       enableOnscreenKeyboard: true, // default to true
                       onSubmitted: (_) {
                         emailFocusNode.unfocus();
                         emailFocusNode.requestFocus();
                       },
+                      decoration: const InputDecoration(
+                        isDense: true,
+                        border: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black, width: 2),
+                        ),
+                        enabledBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black, width: 2),
+                        ),
+                        focusedBorder: UnderlineInputBorder(
+                          borderSide: BorderSide(color: Colors.black, width: 2),
+                        ),
+                      ),
                       style: TextStyle(
                         fontSize: 25,
                         fontFamily: Constants.fontAdornExpandedSans,
@@ -128,7 +154,7 @@ class _DigitalCopyState extends State<DigitalCopy> {
                 right: 450,
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, RouteNames.digitalCopy);
+                    Navigator.pushNamed(context, RouteNames.thankYouScreen);
                   },
                   child: SizedBox(
                     height: 105,
@@ -152,7 +178,7 @@ class _DigitalCopyState extends State<DigitalCopy> {
                 right: 450,
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, RouteNames.digitalCopy);
+                    Navigator.pushNamed(context, RouteNames.thankYouScreen);
                   },
                   child: SizedBox(
                     height: 105,

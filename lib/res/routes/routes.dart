@@ -5,6 +5,7 @@ import 'package:httyd/screens/select_your_dragon.dart';
 import 'package:httyd/screens/select_viking_name.dart';
 import 'package:httyd/screens/splash/splash_screen.dart';
 import 'package:httyd/screens/starting_page.dart';
+import 'package:httyd/screens/thank_you_screen.dart';
 
 class RouteNames {
   static const String splashScreen = 'splash_screen';
@@ -13,6 +14,7 @@ class RouteNames {
   static const String startingPage = 'starting_page';
   static const String confirmLicenseImage = 'confirm_license_image';
   static const String digitalCopy = 'digital_copy';
+  static const String thankYouScreen = 'thank_you_screen';
 }
 
 class Routes {
@@ -41,6 +43,10 @@ class Routes {
       case RouteNames.digitalCopy:
         return MaterialPageRoute(
           builder: (BuildContext context) => const DigitalCopy(),
+        );
+      case RouteNames.thankYouScreen:
+        return MaterialPageRoute(
+          builder: (BuildContext context) => const ThankYouScreen(),
         );
       default:
         return MaterialPageRoute(

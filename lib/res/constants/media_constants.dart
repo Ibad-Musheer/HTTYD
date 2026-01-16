@@ -31,8 +31,10 @@ class MediaConstants {
   static const String bottomLeftDarkBgEffect =
       "${imagePath}bottom_left_dark_bg_effect.png";
   static const String border = "${imagePath}border.png";
+  static const String thankYouBg = "${imagePath}thank_you_bg.png";
   static const String selectedFirstName = "${imagePath}selected_first_name.png";
   static const String selectedLastName = "${imagePath}selected_last_name.png";
-  static const String confirmLicenseImage = "${imagePath}confirm_license_image.png";
+  static const String confirmLicenseImage =
+      "${imagePath}confirm_license_image.png";
   static const String digitalCopyBg = "${imagePath}digital_copy_bg.png";
 }

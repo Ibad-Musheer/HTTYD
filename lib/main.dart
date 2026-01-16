@@ -6,7 +6,6 @@ import 'package:httyd/l10n/l10n.dart';
 import 'package:httyd/res/constants/constants.dart';
 import 'package:httyd/res/routes/routes.dart';
 import 'package:httyd/res/theme/theme.dart';
-import 'package:httyd/screens/starting_page.dart';
 import 'package:httyd/utils/utils.dart';
 
 void main() {
