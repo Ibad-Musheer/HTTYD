@@ -1,12 +1,15 @@
 class MediaConstants {
   static const String svgPath = 'assets/svg/';
   static const String imagePath = 'assets/images/';
+  static const String videoPath = 'assets/video/';
 
   static const String closeIcon = "${svgPath}close.svg";
   static const String bookCover = "${imagePath}book_cover.png";
   static const String topRightBgEffect = "${imagePath}top_right_bg_effect.png";
   static const String paperBackground = "${imagePath}paper_background.png";
   static const String leftBgEffect = "${imagePath}left_bg_effect.png";
+  static const String introVideo = "${videoPath}intro_video.mp4";
+  static const String introSmallVideo = "${videoPath}intro_small_video.mp4";
   static const String bottomLeftBgEffect =
       "${imagePath}bottom_left_bg_effect.png";
   static const String isleOfBerk = "${imagePath}isle_of_berk.png";

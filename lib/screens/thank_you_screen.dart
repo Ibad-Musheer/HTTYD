@@ -21,7 +21,6 @@ class _ThankYouScreenState extends State<ThankYouScreen> {
           image: DecorationImage(image: AssetImage(MediaConstants.thankYouBg)),
         ),
         child: Stack(children: [
-            
           ],
         ),
       ),
