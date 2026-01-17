@@ -19,6 +19,7 @@ class _StartingPageState extends State<StartingPage>
   late Animation<double> _scaleAnimation;
   VideoPlayerController? _videoController;
   Timer? _videoPauseTimer;
+  double _bookCoverOpacity = 0.0;
 
   @override
   void initState() {
@@ -91,18 +92,22 @@ class _StartingPageState extends State<StartingPage>
           // Video is now loaded and ready - play it
           if (mounted && _videoController != null) {
             setState(() {
-              _videoController?.setPlaybackSpeed(
-                2.0,
-              ); // Double the playback speed
+              // Double the playback speed
               _videoController?.play();
               _videoController?.setLooping(false);
 
               // Pause after 14 seconds
-              _videoPauseTimer = Timer(const Duration(seconds: 7), () {
-                if (mounted && _videoController != null) {
-                  _videoController?.pause();
-                }
-              });
+              _videoPauseTimer = Timer(
+                const Duration(seconds: 8, milliseconds: 900),
+                () {
+                  if (mounted && _videoController != null) {
+                    setState(() {
+                      _videoController?.pause();
+                      _bookCoverOpacity = 1.0;
+                    });
+                  }
+                },
+              );
             });
           }
         })
@@ -144,7 +149,7 @@ class _StartingPageState extends State<StartingPage>
               offset: Offset(0, 60),
               child: Center(
                 child: Opacity(
-                  opacity: 1,
+                  opacity: _bookCoverOpacity,
                   child: AnimatedBuilder(
                     animation: _scaleAnimation,
                     builder: (context, child) {
