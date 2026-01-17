@@ -55,7 +55,7 @@ class _SelectYourDragonState extends State<SelectYourDragon> {
       backgroundColor: Colors.black,
       body: Center(
         child: Column(
-          mainAxisAlignment: .center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Stack(
               children: [
@@ -193,14 +193,15 @@ class _SelectYourDragonState extends State<SelectYourDragon> {
                         height: 110,
                         width: 350,
                         decoration: BoxDecoration(
-                          color: _getSelectedDragonName() == null
-                              ? Colors.transparent
-                              : Color.fromARGB(
-                                  255,
-                                  144,
-                                  118,
-                                  74,
-                                ).withAlpha(195),
+                          color:
+                              _getSelectedDragonName() == null
+                                  ? Colors.transparent
+                                  : Color.fromARGB(
+                                    255,
+                                    144,
+                                    118,
+                                    74,
+                                  ).withAlpha(195),
                           image: DecorationImage(
                             image: AssetImage(MediaConstants.border),
                             fit: BoxFit.contain,
@@ -243,30 +244,26 @@ class _SelectYourDragonState extends State<SelectYourDragon> {
   }) {
     final isSelected = selectedDragonIndex == index;
     // Adjust container position to center the larger selected container
-    final adjustedContainerLeft = isSelected
-        ? containerLeft - (392 - containerWidth) / 2
-        : containerLeft;
-    final adjustedContainerTop = isSelected
-        ? containerTop - (392 - containerHeight) / 2
-        : containerTop;
+    final adjustedContainerLeft =
+        isSelected ? containerLeft - (392 - containerWidth) / 2 : containerLeft;
+    final adjustedContainerTop =
+        isSelected ? containerTop - (392 - containerHeight) / 2 : containerTop;
 
     // Calculate the bounds of the entire selectable area
-    final minLeft = adjustedContainerLeft < dragonLeft
-        ? adjustedContainerLeft
-        : dragonLeft;
-    final minTop = adjustedContainerTop < dragonTop
-        ? adjustedContainerTop
-        : dragonTop;
+    final minLeft =
+        adjustedContainerLeft < dragonLeft ? adjustedContainerLeft : dragonLeft;
+    final minTop =
+        adjustedContainerTop < dragonTop ? adjustedContainerTop : dragonTop;
     final maxRight =
         (adjustedContainerLeft + (isSelected ? 392 : containerWidth)) >
-            (dragonLeft + dragonWidth)
-        ? (adjustedContainerLeft + (isSelected ? 392 : containerWidth))
-        : (dragonLeft + dragonWidth);
+                (dragonLeft + dragonWidth)
+            ? (adjustedContainerLeft + (isSelected ? 392 : containerWidth))
+            : (dragonLeft + dragonWidth);
     final maxBottom =
         (adjustedContainerTop + (isSelected ? 392 : containerHeight)) >
-            (dragonTop + dragonHeight)
-        ? (adjustedContainerTop + (isSelected ? 392 : containerHeight))
-        : (dragonTop + dragonHeight);
+                (dragonTop + dragonHeight)
+            ? (adjustedContainerTop + (isSelected ? 392 : containerHeight))
+            : (dragonTop + dragonHeight);
 
     final areaWidth = maxRight - minLeft;
     final areaHeight = maxBottom - minTop;

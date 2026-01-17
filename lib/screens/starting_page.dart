@@ -2,9 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:httyd/res/constants/constants.dart';
 import 'package:httyd/res/constants/media_constants.dart';
-import 'package:httyd/res/routes/routes.dart';
+import 'package:httyd/screens/select_your_dragon.dart';
 import 'package:httyd/utils/responsiveSize.dart';
 import 'package:video_player/video_player.dart';
+import 'package:page_flip/page_flip.dart';
 
 class StartingPage extends StatefulWidget {
   const StartingPage({super.key});
@@ -13,7 +14,37 @@ class StartingPage extends StatefulWidget {
   State<StartingPage> createState() => _StartingPageState();
 }
 
-class _StartingPageState extends State<StartingPage>
+class _StartingPageState extends State<StartingPage> {
+  final GlobalKey<PageFlipWidgetState> _pageFlipKey = GlobalKey();
+
+  void _flipPage() {
+    _pageFlipKey.currentState?.nextPage();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.black,
+      body: PageFlipWidget(
+        key: _pageFlipKey,
+        backgroundColor: Colors.black,
+        initialIndex: 0,
+        children: [_FirstPage(onFlipPage: _flipPage), const SelectYourDragon()],
+      ),
+    );
+  }
+}
+
+class _FirstPage extends StatefulWidget {
+  final VoidCallback onFlipPage;
+
+  const _FirstPage({required this.onFlipPage});
+
+  @override
+  State<_FirstPage> createState() => _FirstPageState();
+}
+
+class _FirstPageState extends State<_FirstPage>
     with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
   late Animation<double> _scaleAnimation;
@@ -51,15 +82,12 @@ class _StartingPageState extends State<StartingPage>
   }
 
   void _increaseImageCacheSize() {
-    // Increase image cache size to allow more images to be preloaded
     final imageCache = PaintingBinding.instance.imageCache;
-    imageCache.maximumSize = 2000; // Increase from default 1000 to 2000
-    imageCache.maximumSizeBytes =
-        500 * 1024 * 1024; // 500 MB (default is 100 MB)
+    imageCache.maximumSize = 2000;
+    imageCache.maximumSizeBytes = 500 * 1024 * 1024;
   }
 
   void _preloadImages() {
-    // Preload all images used in select_your_dragon screen
     precacheImage(AssetImage(MediaConstants.paperBackground), context);
     precacheImage(AssetImage(MediaConstants.lineDecoration), context);
     precacheImage(AssetImage(MediaConstants.circle), context);
@@ -81,96 +109,98 @@ class _StartingPageState extends State<StartingPage>
   }
 
   void _preloadVideo() {
-    // Preload video by initializing the controller
     final videoPath = MediaConstants.introSmallVideo;
-    print('Loading video from: $videoPath');
 
     _videoController = VideoPlayerController.asset(videoPath);
     _videoController
         ?.initialize()
         .then((_) {
-          // Video is now loaded and ready - play it
           if (mounted && _videoController != null) {
             setState(() {
-              // Double the playback speed
               _videoController?.play();
               _videoController?.setLooping(false);
-
-              // Pause after 14 seconds
-              _videoPauseTimer = Timer(
-                const Duration(seconds: 8, milliseconds: 900),
-                () {
-                  if (mounted && _videoController != null) {
-                    setState(() {
-                      _videoController?.pause();
-                      _bookCoverOpacity = 1.0;
-                    });
-                  }
-                },
-              );
+              _videoPauseTimer = Timer(const Duration(seconds: 9), () {
+                if (mounted && _videoController != null) {
+                  setState(() {
+                    _videoController?.pause();
+                    _bookCoverOpacity = 1.0;
+                  });
+                  Future.delayed(const Duration(milliseconds: 500), () {
+                    if (mounted) {
+                      _handleStartPressed();
+                    }
+                  });
+                }
+              });
             });
           }
         })
         .catchError((error) {
-          // Handle error if video fails to load
-          print('Error preloading video: $error');
-          print('Video path attempted: $videoPath');
+          print('Error loading video: $error');
         });
   }
 
   void _handleStartPressed() {
-    print("Start button pressed");
     _animationController.forward().then((_) {
-      Navigator.pushNamed(context, RouteNames.selectYourDragon);
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted) {
+          widget.onFlipPage();
+        }
+      });
     });
   }
 
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final initialHeight = 1250.0;
+    final initialHeight = 1450.0;
     final targetHeight = screenSize.height;
 
-    return Scaffold(
-      backgroundColor: Colors.black,
-      body: Container(
-        height: context.screenHeight,
-        width: context.screenWidth,
-        child: Stack(
-          children: [
-            // Video player
-            if (_videoController != null &&
-                _videoController!.value.isInitialized)
-              Positioned.fill(
-                child: IgnorePointer(child: VideoPlayer(_videoController!)),
+    return Container(
+      height: context.screenHeight,
+      width: context.screenWidth,
+      color: Colors.black,
+      child: Stack(
+        clipBehavior: Clip.none,
+        children: [
+          // Video player
+          if (_videoController != null && _videoController!.value.isInitialized)
+            SizedBox(
+              width: context.screenWidth,
+              height: context.screenHeight,
+              child: FittedBox(
+                fit: BoxFit.cover,
+                child: SizedBox(
+                  width: _videoController!.value.size.width,
+                  height: _videoController!.value.size.height,
+                  child: VideoPlayer(_videoController!),
+                ),
               ),
+            ),
+          // Book cover
+          Center(
+            child: OverflowBox(
+              maxWidth: double.infinity,
+              maxHeight: double.infinity,
+              child: AnimatedOpacity(
+                opacity: _bookCoverOpacity,
+                duration: const Duration(milliseconds: 500),
+                child: AnimatedBuilder(
+                  animation: _scaleAnimation,
+                  builder: (context, child) {
+                    final animatedOffsetY = 60.0 * (1 - _scaleAnimation.value);
+                    final animatedHeight =
+                        initialHeight +
+                        (_scaleAnimation.value *
+                            (targetHeight - initialHeight));
+                    final animatedWidth =
+                        980.0 +
+                        (_scaleAnimation.value *
+                            (screenSize.width + 200 - 980.0));
 
-            Transform.translate(
-              offset: Offset(0, 60),
-              child: Center(
-                child: Opacity(
-                  opacity: _bookCoverOpacity,
-                  child: AnimatedBuilder(
-                    animation: _scaleAnimation,
-                    builder: (context, child) {
-                      // Interpolate from initial size to full screen size
-                      final animatedHeight =
-                          initialHeight +
-                          (_scaleAnimation.value *
-                              (targetHeight - initialHeight));
-                      final animatedWidth =
-                          980.0 +
-                          (_scaleAnimation.value * (screenSize.width - 1150.0));
-
-                      const initialTop = 905.0;
-                      // Calculate target top position to maintain relative position in full screen
-                      final targetTop =
-                          (initialTop / initialHeight) * targetHeight;
-                      final animatedTop =
-                          initialTop +
-                          (_scaleAnimation.value * (targetTop - initialTop));
-
-                      return IgnorePointer(
+                    return Transform.translate(
+                      offset: Offset(0, animatedOffsetY),
+                      child: IgnorePointer(
                         child: Container(
                           height: animatedHeight,
                           width: animatedWidth,
@@ -181,38 +211,38 @@ class _StartingPageState extends State<StartingPage>
                             ),
                           ),
                         ),
-                      );
-                    },
-                  ),
+                      ),
+                    );
+                  },
                 ),
               ),
             ),
-            Positioned(
-              top: 1125,
-              left: 490,
-
-              child: GestureDetector(
-                onTap: _handleStartPressed,
-                child: Container(
-                  width: 285,
-                  height: 75,
-                  color: Colors.transparent,
-                  child: Center(
-                    child: Text(
-                      "START",
-                      style: TextStyle(
-                        fontSize: 30,
-                        fontWeight: FontWeight.w500,
-                        fontFamily: Constants.fontAdornExpandedSans,
-                        color: Colors.black,
-                      ),
+          ),
+          // START button
+          Positioned(
+            top: 1125,
+            left: 490,
+            child: GestureDetector(
+              onTap: _handleStartPressed,
+              child: Container(
+                width: 285,
+                height: 75,
+                color: Colors.transparent,
+                child: Center(
+                  child: Text(
+                    "START",
+                    style: TextStyle(
+                      fontSize: 30,
+                      fontWeight: FontWeight.w500,
+                      fontFamily: Constants.fontAdornExpandedSans,
+                      color: Colors.black,
                     ),
                   ),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }
