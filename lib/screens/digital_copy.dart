@@ -7,7 +7,9 @@ import 'package:httyd/res/theme/theme.dart';
 import 'package:httyd/utils/responsiveSize.dart';
 
 class DigitalCopy extends StatefulWidget {
-  const DigitalCopy({super.key});
+  final VoidCallback? onConfirm;
+
+  const DigitalCopy({super.key, this.onConfirm});
 
   @override
   State<DigitalCopy> createState() => _DigitalCopyState();
@@ -154,7 +156,11 @@ class _DigitalCopyState extends State<DigitalCopy> {
                 right: 450,
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, RouteNames.thankYouScreen);
+                    if (widget.onConfirm != null) {
+                      widget.onConfirm!();
+                    } else {
+                      Navigator.pushNamed(context, RouteNames.thankYouScreen);
+                    }
                   },
                   child: SizedBox(
                     height: 105,
@@ -178,7 +184,11 @@ class _DigitalCopyState extends State<DigitalCopy> {
                 right: 450,
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushNamed(context, RouteNames.thankYouScreen);
+                    if (widget.onConfirm != null) {
+                      widget.onConfirm!();
+                    } else {
+                      Navigator.pushNamed(context, RouteNames.thankYouScreen);
+                    }
                   },
                   child: SizedBox(
                     height: 105,

@@ -5,8 +5,9 @@ import 'package:httyd/screens/confirm_license_image.dart';
 
 class ConfirmLicenseWrapper extends StatefulWidget {
   final VoidCallback? onRetake;
+  final VoidCallback? onConfirm;
 
-  const ConfirmLicenseWrapper({super.key, this.onRetake});
+  const ConfirmLicenseWrapper({super.key, this.onRetake, this.onConfirm});
 
   @override
   State<ConfirmLicenseWrapper> createState() => _ConfirmLicenseWrapperState();
@@ -65,7 +66,10 @@ class _ConfirmLicenseWrapperState extends State<ConfirmLicenseWrapper>
     return Stack(
       children: [
         // Confirm License Image screen
-        ConfirmLicenseImage(onRetake: _handleRetake),
+        ConfirmLicenseImage(
+          onRetake: _handleRetake,
+          onConfirm: widget.onConfirm,
+        ),
 
         // Book cover overlay with animation
         Positioned.fill(

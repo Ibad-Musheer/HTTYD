@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:httyd/res/constants/constants.dart';
 import 'package:httyd/res/constants/media_constants.dart';
 import 'package:httyd/screens/confirm_license_wrapper.dart';
+import 'package:httyd/screens/digital_copy.dart';
 import 'package:httyd/screens/select_viking_name.dart';
 import 'package:httyd/screens/select_your_dragon.dart';
+import 'package:httyd/screens/thank_you_screen.dart';
 import 'package:httyd/screens/video_playback_page.dart';
 import 'package:httyd/utils/responsiveSize.dart';
 import 'package:video_player/video_player.dart';
@@ -26,17 +28,49 @@ class _StartingPageState extends State<StartingPage> {
     _pageFlipKey.currentState?.nextPage();
   }
 
+  void _flipToVideoPlayback() {
+    _videoPlaybackKey.currentState?.seekToTimestamp(
+      const Duration(seconds: 9, milliseconds: 170),
+    );
+
+    _pageFlipKey.currentState?.nextPage();
+
+    // Start the video playback sequence after page flip
+    Future.delayed(const Duration(milliseconds: 700), () {
+      _videoPlaybackKey.currentState?.startSequence();
+    });
+  }
+
   void _flipToVikingName() {
     // Reset the third page before navigating to it.
+
     setState(() {
       _vikingNameKey = UniqueKey();
     });
+
+    // Seek VideoPlaybackPage to 8.9 seconds
+
+    _videoPlaybackKey.currentState?.seekToTimestamp(
+      const Duration(seconds: 8, milliseconds: 650),
+    );
+
     _pageFlipKey.currentState?.nextPage();
   }
 
   void _handleRetake() {
+    _videoPlaybackKey.currentState?.seekToTimestamp(
+      const Duration(seconds: 8, milliseconds: 700),
+    );
     // Go back to VideoPlaybackPage (index 3)
     _pageFlipKey.currentState?.previousPage();
+  }
+
+  void _resetApp() {
+    // Reset to first page
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(builder: (context) => StartingPage()),
+    );
   }
 
   @override
@@ -51,9 +85,14 @@ class _StartingPageState extends State<StartingPage> {
         children: [
           _FirstPage(onFlipPage: _flipPage),
           SelectYourDragon(onDragonSelected: _flipToVikingName),
-          SelectVikingName(key: _vikingNameKey, onNameConfirmed: _flipPage),
+          SelectVikingName(
+            key: _vikingNameKey,
+            onNameConfirmed: _flipToVideoPlayback,
+          ),
           VideoPlaybackPage(key: _videoPlaybackKey, onVideoComplete: _flipPage),
-          ConfirmLicenseWrapper(onRetake: _handleRetake),
+          ConfirmLicenseWrapper(onRetake: _handleRetake, onConfirm: _flipPage),
+          DigitalCopy(onConfirm: _flipPage),
+          ThankYouScreen(onReset: _resetApp),
         ],
       ),
     );
@@ -76,6 +115,7 @@ class _FirstPageState extends State<_FirstPage>
   VideoPlayerController? _videoController;
   Timer? _videoPauseTimer;
   double _bookCoverOpacity = 1.0;
+  bool _startPressed = false;
 
   @override
   void initState() {
@@ -157,29 +197,35 @@ class _FirstPageState extends State<_FirstPage>
         _bookCoverOpacity = 0.0; // Fade out book cover when START is pressed
       });
       _videoController?.play();
-      _videoPauseTimer = Timer(const Duration(seconds: 9), () {
-        if (mounted && _videoController != null) {
-          setState(() {
-            _videoController?.pause();
-            _bookCoverOpacity = 1.0; // Fade in book cover when video ends
-          });
-          Future.delayed(const Duration(milliseconds: 500), () {
-            if (mounted) {
-              _animationController.forward().then((_) {
-                Future.delayed(const Duration(milliseconds: 500), () {
-                  if (mounted) {
-                    widget.onFlipPage();
-                  }
+      _videoPauseTimer = Timer(
+        const Duration(seconds: 8, milliseconds: 900),
+        () {
+          if (mounted && _videoController != null) {
+            setState(() {
+              _videoController?.pause();
+              _bookCoverOpacity = 1.0; // Fade in book cover when video ends
+            });
+            Future.delayed(const Duration(milliseconds: 500), () {
+              if (mounted) {
+                _animationController.forward().then((_) {
+                  Future.delayed(const Duration(milliseconds: 500), () {
+                    if (mounted) {
+                      widget.onFlipPage();
+                    }
+                  });
                 });
-              });
-            }
-          });
-        }
-      });
+              }
+            });
+          }
+        },
+      );
     }
   }
 
   void _handleStartPressed() {
+    setState(() {
+      _startPressed = true;
+    });
     _playVideoAndWaitForEnd();
   }
 
@@ -253,7 +299,7 @@ class _FirstPageState extends State<_FirstPage>
           ),
           // START button
           Positioned(
-            top: 1125,
+            top: 1145,
             left: 490,
             child: GestureDetector(
               onTap: _handleStartPressed,
@@ -262,15 +308,17 @@ class _FirstPageState extends State<_FirstPage>
                 height: 75,
                 color: Colors.transparent,
                 child: Center(
-                  child: Text(
-                    "START",
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: Constants.fontAdornExpandedSans,
-                      color: Colors.black,
-                    ),
-                  ),
+                  child: _startPressed
+                      ? SizedBox.shrink()
+                      : Text(
+                          "START",
+                          style: TextStyle(
+                            fontSize: 30,
+                            fontWeight: FontWeight.w500,
+                            fontFamily: Constants.fontAdornExpandedSans,
+                            color: Colors.black,
+                          ),
+                        ),
                 ),
               ),
             ),

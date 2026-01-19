@@ -7,8 +7,9 @@ import 'package:httyd/utils/responsiveSize.dart';
 
 class ConfirmLicenseImage extends StatefulWidget {
   final VoidCallback? onRetake;
+  final VoidCallback? onConfirm;
 
-  const ConfirmLicenseImage({super.key, this.onRetake});
+  const ConfirmLicenseImage({super.key, this.onRetake, this.onConfirm});
 
   @override
   State<ConfirmLicenseImage> createState() => _ConfirmLicenseImageState();
@@ -35,7 +36,11 @@ class _ConfirmLicenseImageState extends State<ConfirmLicenseImage> {
               right: 350,
               child: GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, RouteNames.digitalCopy);
+                  if (widget.onConfirm != null) {
+                    widget.onConfirm!();
+                  } else {
+                    Navigator.pushNamed(context, RouteNames.digitalCopy);
+                  }
                 },
                 child: SizedBox(
                   height: 105,

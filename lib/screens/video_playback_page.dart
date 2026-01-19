@@ -40,13 +40,17 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
 
     // Start with animation at end (zoomed in state)
     _animationController.value = 1.0;
+  }
 
-    // Start the sequence after a short delay
-    Future.delayed(const Duration(milliseconds: 500), () {
-      if (mounted) {
-        _startSequence();
-      }
-    });
+  // Public method to start the sequence, called from parent
+  void startSequence() {
+    if (!_hasStarted) {
+      Future.delayed(const Duration(milliseconds: 500), () {
+        if (mounted) {
+          _startSequence();
+        }
+      });
+    }
   }
 
   @override
@@ -91,12 +95,15 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
         _videoController?.setLooping(false);
         _videoController?.play();
       });
-      _videoPauseTimer = Timer(const Duration(seconds: 2), () {
-        if (mounted && _videoController != null) {
-          _videoController?.pause();
-          _initializeCamera();
-        }
-      });
+      _videoPauseTimer = Timer(
+        const Duration(seconds: 2, milliseconds: 200),
+        () {
+          if (mounted && _videoController != null) {
+            _videoController?.pause();
+            _initializeCamera();
+          }
+        },
+      );
       return;
     }
 
@@ -259,6 +266,11 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
     _initializeCamera();
   }
 
+  // Public method to seek video to a specific timestamp
+  void seekToTimestamp(Duration timestamp) {
+    _videoController?.seekTo(timestamp);
+  }
+
   Future<void> _ensureVideoBackgroundReady() async {
     try {
       if (_videoController != null && _videoController!.value.isInitialized) {
@@ -271,7 +283,9 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
       if (!mounted) return;
 
       // Show a paused frame at the same point as the retake sequence.
-      await _videoController?.seekTo(const Duration(seconds: 9));
+      await _videoController?.seekTo(
+        const Duration(seconds: 8, milliseconds: 800),
+      );
       setState(() {});
     } catch (e) {
       // If video fails to initialize, proceed without blocking retake flow.
@@ -312,7 +326,7 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
               _cameraController!.value.isInitialized)
             Center(
               child: Transform.translate(
-                offset: Offset(-30, -15),
+                offset: Offset(-30, -10),
                 child: SizedBox(
                   width: 660,
                   height: 660,
