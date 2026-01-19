@@ -2,7 +2,10 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:httyd/res/constants/constants.dart';
 import 'package:httyd/res/constants/media_constants.dart';
+import 'package:httyd/screens/confirm_license_wrapper.dart';
+import 'package:httyd/screens/select_viking_name.dart';
 import 'package:httyd/screens/select_your_dragon.dart';
+import 'package:httyd/screens/video_playback_page.dart';
 import 'package:httyd/utils/responsiveSize.dart';
 import 'package:video_player/video_player.dart';
 import 'package:page_flip/page_flip.dart';
@@ -16,9 +19,24 @@ class StartingPage extends StatefulWidget {
 
 class _StartingPageState extends State<StartingPage> {
   final GlobalKey<PageFlipWidgetState> _pageFlipKey = GlobalKey();
+  final GlobalKey<VideoPlaybackPageState> _videoPlaybackKey = GlobalKey();
+  Key _vikingNameKey = UniqueKey();
 
   void _flipPage() {
     _pageFlipKey.currentState?.nextPage();
+  }
+
+  void _flipToVikingName() {
+    // Reset the third page before navigating to it.
+    setState(() {
+      _vikingNameKey = UniqueKey();
+    });
+    _pageFlipKey.currentState?.nextPage();
+  }
+
+  void _handleRetake() {
+    // Go back to VideoPlaybackPage (index 3)
+    _pageFlipKey.currentState?.previousPage();
   }
 
   @override
@@ -26,10 +44,17 @@ class _StartingPageState extends State<StartingPage> {
     return Scaffold(
       backgroundColor: Colors.black,
       body: PageFlipWidget(
+        duration: const Duration(milliseconds: 650),
         key: _pageFlipKey,
         backgroundColor: Colors.black,
         initialIndex: 0,
-        children: [_FirstPage(onFlipPage: _flipPage), const SelectYourDragon()],
+        children: [
+          _FirstPage(onFlipPage: _flipPage),
+          SelectYourDragon(onDragonSelected: _flipToVikingName),
+          SelectVikingName(key: _vikingNameKey, onNameConfirmed: _flipPage),
+          VideoPlaybackPage(key: _videoPlaybackKey, onVideoComplete: _flipPage),
+          ConfirmLicenseWrapper(onRetake: _handleRetake),
+        ],
       ),
     );
   }
@@ -50,7 +75,7 @@ class _FirstPageState extends State<_FirstPage>
   late Animation<double> _scaleAnimation;
   VideoPlayerController? _videoController;
   Timer? _videoPauseTimer;
-  double _bookCoverOpacity = 0.0;
+  double _bookCoverOpacity = 1.0;
 
   @override
   void initState() {
@@ -117,21 +142,7 @@ class _FirstPageState extends State<_FirstPage>
         .then((_) {
           if (mounted && _videoController != null) {
             setState(() {
-              _videoController?.play();
               _videoController?.setLooping(false);
-              _videoPauseTimer = Timer(const Duration(seconds: 9), () {
-                if (mounted && _videoController != null) {
-                  setState(() {
-                    _videoController?.pause();
-                    _bookCoverOpacity = 1.0;
-                  });
-                  Future.delayed(const Duration(milliseconds: 500), () {
-                    if (mounted) {
-                      _handleStartPressed();
-                    }
-                  });
-                }
-              });
             });
           }
         })
@@ -140,14 +151,36 @@ class _FirstPageState extends State<_FirstPage>
         });
   }
 
-  void _handleStartPressed() {
-    _animationController.forward().then((_) {
-      Future.delayed(const Duration(milliseconds: 500), () {
-        if (mounted) {
-          widget.onFlipPage();
+  void _playVideoAndWaitForEnd() {
+    if (_videoController != null && mounted) {
+      setState(() {
+        _bookCoverOpacity = 0.0; // Fade out book cover when START is pressed
+      });
+      _videoController?.play();
+      _videoPauseTimer = Timer(const Duration(seconds: 9), () {
+        if (mounted && _videoController != null) {
+          setState(() {
+            _videoController?.pause();
+            _bookCoverOpacity = 1.0; // Fade in book cover when video ends
+          });
+          Future.delayed(const Duration(milliseconds: 500), () {
+            if (mounted) {
+              _animationController.forward().then((_) {
+                Future.delayed(const Duration(milliseconds: 500), () {
+                  if (mounted) {
+                    widget.onFlipPage();
+                  }
+                });
+              });
+            }
+          });
         }
       });
-    });
+    }
+  }
+
+  void _handleStartPressed() {
+    _playVideoAndWaitForEnd();
   }
 
   @override

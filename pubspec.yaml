@@ -42,6 +42,7 @@ dependencies:
   flutter_onscreen_keyboard: ^0.4.2+1
   video_player: ^2.10.1
   page_flip: ^0.2.5+1
+  camera: ^0.11.0+2
 
 
 

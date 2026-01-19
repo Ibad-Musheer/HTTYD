@@ -6,7 +6,9 @@ import 'package:httyd/res/theme/theme.dart';
 import 'package:httyd/utils/responsiveSize.dart';
 
 class ConfirmLicenseImage extends StatefulWidget {
-  const ConfirmLicenseImage({super.key});
+  final VoidCallback? onRetake;
+
+  const ConfirmLicenseImage({super.key, this.onRetake});
 
   @override
   State<ConfirmLicenseImage> createState() => _ConfirmLicenseImageState();
@@ -64,7 +66,7 @@ class _ConfirmLicenseImageState extends State<ConfirmLicenseImage> {
               right: 455,
               child: GestureDetector(
                 onTap: () {
-                  Navigator.pushNamed(context, RouteNames.selectVikingName);
+                  widget.onRetake!();
                 },
                 child: SizedBox(
                   height: 105,

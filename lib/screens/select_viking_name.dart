@@ -6,7 +6,9 @@ import 'package:httyd/res/theme/theme.dart';
 import 'package:httyd/utils/responsiveSize.dart';
 
 class SelectVikingName extends StatefulWidget {
-  const SelectVikingName({super.key});
+  final VoidCallback? onNameConfirmed;
+
+  const SelectVikingName({super.key, this.onNameConfirmed});
 
   @override
   State<SelectVikingName> createState() => _SelectVikingNameState();
@@ -150,7 +152,11 @@ class _SelectVikingNameState extends State<SelectVikingName> {
             SizedBox(height: 240),
             GestureDetector(
               onTap: () {
-                Navigator.pushNamed(context, RouteNames.confirmLicenseImage);
+                if (widget.onNameConfirmed != null) {
+                  widget.onNameConfirmed!();
+                } else {
+                  Navigator.pushNamed(context, RouteNames.confirmLicenseImage);
+                }
               },
               child: Container(
                 height: 110,
