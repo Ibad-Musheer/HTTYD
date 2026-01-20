@@ -115,7 +115,7 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
         .then((_) {
           if (mounted && _videoController != null) {
             // Seek to 9 seconds (where we paused before)
-            _videoController?.seekTo(const Duration(seconds: 9));
+            _videoController?.seekTo(Duration(seconds: 9));
 
             setState(() {
               _videoController?.setLooping(false);
@@ -163,7 +163,7 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
         // Close camera and resume video after 5 seconds
         _cameraCloseTimer = Timer(const Duration(seconds: 5), () {
           if (mounted) {
-            _closeCameraAndResumeVideo();
+            // _closeCameraAndResumeVideo();
           }
         });
       }
@@ -236,11 +236,13 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
   void startRetakeSequence() async {
     if (!mounted) return;
 
+    // Reset state
+    _hasStarted = false;
     _videoPauseTimer?.cancel();
     _cameraCloseTimer?.cancel();
 
     _videoController?.pause();
-    _cameraController?.dispose();
+    await _cameraController?.dispose();
     _cameraController = null;
 
     setState(() {
@@ -252,17 +254,25 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
     _animationController.value = 1.0;
     await _ensureVideoBackgroundReady();
     if (!mounted) return;
+
     // Ensure the paused frame is painted before animation starts.
     setState(() {});
+    await Future.delayed(const Duration(milliseconds: 100));
+    if (!mounted) return;
+
     try {
       await _animationController.reverse();
     } catch (_) {
       // No-op: still proceed to show camera even if animation fails.
     }
     if (!mounted) return;
+
     setState(() {
       _bookCoverOpacity = 0.0;
     });
+
+    await Future.delayed(const Duration(milliseconds: 300));
+    if (!mounted) return;
     _initializeCamera();
   }
 
@@ -284,7 +294,7 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
 
       // Show a paused frame at the same point as the retake sequence.
       await _videoController?.seekTo(
-        const Duration(seconds: 8, milliseconds: 800),
+        const Duration(seconds: 8, milliseconds: 900),
       );
       setState(() {});
     } catch (e) {
@@ -296,7 +306,7 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final initialHeight = 1450.0;
+    final initialHeight = 1440.0;
     final targetHeight = screenSize.height;
 
     return Container(
@@ -326,13 +336,16 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
               _cameraController!.value.isInitialized)
             Center(
               child: Transform.translate(
-                offset: Offset(-30, -10),
+                offset: Offset(-10, 10),
                 child: SizedBox(
-                  width: 660,
-                  height: 660,
+                  width: 680,
+                  height: 680,
                   child: ClipRRect(
-                    borderRadius: BorderRadius.circular(18800),
-                    child: CameraPreview(_cameraController!),
+                    borderRadius: BorderRadius.circular(189800),
+                    child: Transform.rotate(
+                      angle: 3.14159, // 180 degrees in radians (π)
+                      child: CameraPreview(_cameraController!),
+                    ),
                   ),
                 ),
               ),

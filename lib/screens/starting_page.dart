@@ -41,6 +41,19 @@ class _StartingPageState extends State<StartingPage> {
     });
   }
 
+  void _flipBackToVideoPlayback() {
+    _videoPlaybackKey.currentState?.seekToTimestamp(
+      const Duration(seconds: 9, milliseconds: 170),
+    );
+
+    _pageFlipKey.currentState?.previousPage();
+
+    // Start the video playback sequence after page flip
+    Future.delayed(const Duration(milliseconds: 700), () {
+      _videoPlaybackKey.currentState?.startSequence();
+    });
+  }
+
   void _flipToVikingName() {
     // Reset the third page before navigating to it.
 
@@ -90,7 +103,10 @@ class _StartingPageState extends State<StartingPage> {
             onNameConfirmed: _flipToVideoPlayback,
           ),
           VideoPlaybackPage(key: _videoPlaybackKey, onVideoComplete: _flipPage),
-          ConfirmLicenseWrapper(onRetake: _handleRetake, onConfirm: _flipPage),
+          ConfirmLicenseWrapper(
+            onRetake: _flipBackToVideoPlayback,
+            onConfirm: _flipPage,
+          ), //_handleRetake
           DigitalCopy(onConfirm: _flipPage),
           ThankYouScreen(onReset: _resetApp),
         ],
@@ -303,22 +319,27 @@ class _FirstPageState extends State<_FirstPage>
             left: 490,
             child: GestureDetector(
               onTap: _handleStartPressed,
-              child: Container(
-                width: 285,
-                height: 75,
-                color: Colors.transparent,
-                child: Center(
-                  child: _startPressed
-                      ? SizedBox.shrink()
-                      : Text(
-                          "START",
-                          style: TextStyle(
-                            fontSize: 30,
-                            fontWeight: FontWeight.w500,
-                            fontFamily: Constants.fontAdornExpandedSans,
-                            color: Colors.black,
-                          ),
+              child: AnimatedOpacity(
+                opacity: _startPressed ? 0.0 : 1.0,
+                duration: const Duration(milliseconds: 300),
+                child: IgnorePointer(
+                  ignoring: _startPressed,
+                  child: Container(
+                    width: 285,
+                    height: 75,
+                    color: Color(0xff6D553E),
+                    child: Center(
+                      child: Text(
+                        "START",
+                        style: TextStyle(
+                          fontSize: 30,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: Constants.fontAdornExpandedSans,
+                          color: Colors.black,
                         ),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),
