@@ -96,7 +96,7 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
         _videoController?.play();
       });
       _videoPauseTimer = Timer(
-        const Duration(seconds: 2, milliseconds: 200),
+        const Duration(seconds: 2, milliseconds: 400),
         () {
           if (mounted && _videoController != null) {
             _videoController?.pause();
@@ -115,7 +115,7 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
         .then((_) {
           if (mounted && _videoController != null) {
             // Seek to 9 seconds (where we paused before)
-            _videoController?.seekTo(Duration(seconds: 9));
+            _videoController?.seekTo(Duration(seconds: 8));
 
             setState(() {
               _videoController?.setLooping(false);
@@ -163,7 +163,7 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
         // Close camera and resume video after 5 seconds
         _cameraCloseTimer = Timer(const Duration(seconds: 5), () {
           if (mounted) {
-            // _closeCameraAndResumeVideo();
+            _closeCameraAndResumeVideo();
           }
         });
       }
@@ -287,14 +287,15 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
         return;
       }
 
-      final videoPath = MediaConstants.introSmallVideo;
+      // final videoPath = MediaConstants.introSmallVideo;
+      final videoPath = MediaConstants.mainVideoV1;
       _videoController = VideoPlayerController.asset(videoPath);
       await _videoController?.initialize();
       if (!mounted) return;
 
       // Show a paused frame at the same point as the retake sequence.
       await _videoController?.seekTo(
-        const Duration(seconds: 8, milliseconds: 900),
+        const Duration(seconds: 8), //book to shield camera
       );
       setState(() {});
     } catch (e) {
@@ -306,7 +307,7 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final initialHeight = 1440.0;
+    final initialHeight = 1080.0;
     final targetHeight = screenSize.height;
 
     return Container(
@@ -336,14 +337,14 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
               _cameraController!.value.isInitialized)
             Center(
               child: Transform.translate(
-                offset: Offset(-10, 10),
+                offset: Offset(0, -100),
                 child: SizedBox(
-                  width: 680,
-                  height: 680,
+                  width: 560,
+                  height: 560,
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(189800),
                     child: Transform.rotate(
-                      angle: 3.14159, // 180 degrees in radians (π)
+                      angle: 0, // 180 degrees in radians (π)
                       child: CameraPreview(_cameraController!),
                     ),
                   ),
@@ -361,15 +362,17 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
                 child: AnimatedBuilder(
                   animation: _scaleAnimation,
                   builder: (context, child) {
-                    final animatedOffsetY = 60.0 * (1 - _scaleAnimation.value);
+                    final animatedOffsetY =
+                        (-130 * (1 - _scaleAnimation.value)) +
+                        60.0 * (1 - _scaleAnimation.value);
                     final animatedHeight =
                         initialHeight +
                         (_scaleAnimation.value *
                             (targetHeight - initialHeight));
                     final animatedWidth =
-                        980.0 +
+                        780.0 +
                         (_scaleAnimation.value *
-                            (screenSize.width + 200 - 980.0));
+                            (screenSize.width + 200 - 880.0));
 
                     return Transform.translate(
                       offset: Offset(0, animatedOffsetY),

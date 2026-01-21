@@ -30,7 +30,7 @@ class _StartingPageState extends State<StartingPage> {
 
   void _flipToVideoPlayback() {
     _videoPlaybackKey.currentState?.seekToTimestamp(
-      const Duration(seconds: 9, milliseconds: 170),
+      const Duration(seconds: 8, milliseconds: 170),
     );
 
     _pageFlipKey.currentState?.nextPage();
@@ -42,10 +42,6 @@ class _StartingPageState extends State<StartingPage> {
   }
 
   void _flipBackToVideoPlayback() {
-    _videoPlaybackKey.currentState?.seekToTimestamp(
-      const Duration(seconds: 9, milliseconds: 170),
-    );
-
     _pageFlipKey.currentState?.previousPage();
 
     // Start the video playback sequence after page flip
@@ -190,7 +186,8 @@ class _FirstPageState extends State<_FirstPage>
   }
 
   void _preloadVideo() {
-    final videoPath = MediaConstants.introSmallVideo;
+    // final videoPath = MediaConstants.introSmallVideo;
+    final videoPath = MediaConstants.mainVideoV1;
 
     _videoController = VideoPlayerController.asset(videoPath);
     _videoController
@@ -214,7 +211,7 @@ class _FirstPageState extends State<_FirstPage>
       });
       _videoController?.play();
       _videoPauseTimer = Timer(
-        const Duration(seconds: 8, milliseconds: 900),
+        const Duration(seconds: 8, milliseconds: 00),
         () {
           if (mounted && _videoController != null) {
             setState(() {
@@ -248,8 +245,8 @@ class _FirstPageState extends State<_FirstPage>
   @override
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
-    final initialHeight = 1450.0;
-    final targetHeight = screenSize.height;
+    final initialHeight = 1080.0;
+    final targetHeight = screenSize.height + 20;
 
     return Container(
       height: context.screenHeight,
@@ -279,22 +276,24 @@ class _FirstPageState extends State<_FirstPage>
               maxHeight: double.infinity,
               child: AnimatedOpacity(
                 opacity: _bookCoverOpacity,
-                duration: const Duration(milliseconds: 500),
+                duration: const Duration(milliseconds: 100),
                 child: AnimatedBuilder(
                   animation: _scaleAnimation,
                   builder: (context, child) {
-                    final animatedOffsetY = 60.0 * (1 - _scaleAnimation.value);
+                    final animatedOffsetY =
+                        (-130 * (1 - _scaleAnimation.value)) +
+                        60.0 * (1 - _scaleAnimation.value);
                     final animatedHeight =
                         initialHeight +
                         (_scaleAnimation.value *
                             (targetHeight - initialHeight));
                     final animatedWidth =
-                        980.0 +
+                        780.0 +
                         (_scaleAnimation.value *
-                            (screenSize.width + 200 - 980.0));
+                            (screenSize.width + 200 - 880.0));
 
                     return Transform.translate(
-                      offset: Offset(0, animatedOffsetY),
+                      offset: Offset(10, animatedOffsetY), // animatedOffsetY
                       child: IgnorePointer(
                         child: Container(
                           height: animatedHeight,

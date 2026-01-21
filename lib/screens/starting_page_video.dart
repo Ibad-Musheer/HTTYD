@@ -80,7 +80,8 @@ class _StartingPageState extends State<StartingPage>
 
   void _preloadVideo() {
     // Preload video by initializing the controller
-    final videoPath = MediaConstants.introSmallVideo;
+    // final videoPath = MediaConstants.introSmallVideo;
+    final videoPath = MediaConstants.mainVideoV1;
     print('Loading video from: $videoPath');
 
     _videoController = VideoPlayerController.asset(videoPath);

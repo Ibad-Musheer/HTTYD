@@ -10,6 +10,7 @@ class MediaConstants {
   static const String leftBgEffect = "${imagePath}left_bg_effect.png";
   static const String introVideo = "${videoPath}intro_video.mp4";
   static const String introSmallVideo = "${videoPath}intro_small_video.mp4";
+  static const String mainVideoV1 = "${videoPath}main_video_v1.mp4";
   static const String bottomLeftBgEffect =
       "${imagePath}bottom_left_bg_effect.png";
   static const String isleOfBerk = "${imagePath}isle_of_berk.png";
