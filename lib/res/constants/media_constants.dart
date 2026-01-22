@@ -5,6 +5,7 @@ class MediaConstants {
 
   static const String closeIcon = "${svgPath}close.svg";
   static const String bookCover = "${imagePath}book_cover.png";
+  static const String bookBackCover = "${imagePath}book_back_cover.png";
   static const String topRightBgEffect = "${imagePath}top_right_bg_effect.png";
   static const String paperBackground = "${imagePath}paper_background.png";
   static const String leftBgEffect = "${imagePath}left_bg_effect.png";

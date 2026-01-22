@@ -382,7 +382,9 @@ class VideoPlaybackPageState extends State<VideoPlaybackPage>
                           width: animatedWidth,
                           decoration: BoxDecoration(
                             image: DecorationImage(
-                              image: AssetImage(MediaConstants.bookCover),
+                              image: AssetImage(
+                                MediaConstants.bookBackCover,
+                              ), //replace by backbookcover
                               fit: BoxFit.fill,
                             ),
                           ),

@@ -180,6 +180,7 @@ class _FirstPageState extends State<_FirstPage>
     precacheImage(AssetImage(MediaConstants.isleOfBerkVertical), context);
     precacheImage(AssetImage(MediaConstants.topRightDarkBgEffect), context);
     precacheImage(AssetImage(MediaConstants.confirmLicenseImage), context);
+    precacheImage(AssetImage(MediaConstants.bookBackCover), context);
     precacheImage(AssetImage(MediaConstants.selectVikingNameBg), context);
     precacheImage(AssetImage(MediaConstants.digitalCopyBg), context);
     precacheImage(AssetImage(MediaConstants.thankYouBg), context);
@@ -314,7 +315,7 @@ class _FirstPageState extends State<_FirstPage>
           ),
           // START button
           Positioned(
-            top: 1145,
+            top: 1145, //1145
             left: 490,
             child: GestureDetector(
               onTap: _handleStartPressed,
